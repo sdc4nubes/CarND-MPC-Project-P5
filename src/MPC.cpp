@@ -87,7 +87,7 @@ class FG_eval {
 		fg[1 + epsi_start] = vars[epsi_start];
 		
 		// Set the rest of the constraints
-		for (int t = 0; t < N; t++) {
+		for (int t = 1; t < N; t++) {
 			// State at time t + 1
 			AD<double> x1 = vars[x_start + t];
 			AD<double> y1 = vars[y_start + t];
@@ -214,12 +214,11 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
   CppAD::ipopt::solve_result<Dvector> solution;
 
   // solve the problem
-  CppAD::ipopt::solve<Dvector, FG_eval>(
+  CppAD::ipopt::solve<Dvector, FG_eval> (
       options, vars, vars_lowerbound, vars_upperbound, constraints_lowerbound,
       constraints_upperbound, fg_eval, solution);
 
   // Check some of the solution values
-	std::cout << "I am here" << std::endl;
   ok &= solution.status == CppAD::ipopt::solve_result<Dvector>::success;
 
   // Cost
