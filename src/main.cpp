@@ -89,6 +89,7 @@ int main() {
 					state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
 
 					// Set the MPC
+					std::cout << "I am here" << std::endl;
 					auto vars = mpc.Solve(state, coeffs);
 					std::cout << "I am here" << std::endl;
 
