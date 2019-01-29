@@ -212,7 +212,6 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 
   // place to return solution
   CppAD::ipopt::solve_result<Dvector> solution;
-	std::cout << "I am here" << std::endl;
 
   // solve the problem
   CppAD::ipopt::solve<Dvector, FG_eval>(
@@ -220,6 +219,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
       constraints_upperbound, fg_eval, solution);
 
   // Check some of the solution values
+	std::cout << "I am here" << std::endl;
   ok &= solution.status == CppAD::ipopt::solve_result<Dvector>::success;
 
   // Cost
