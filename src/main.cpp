@@ -33,7 +33,7 @@ int main() {
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
     string sdata = string(data).substr(0, length);
-    std::cout << sdata << std::endl;
+    // std::cout << sdata << std::endl;
     if (sdata.size() > 2 && sdata[0] == '4' && sdata[1] == '2') {
       string s = hasData(sdata);
       if (s != "") {
@@ -101,8 +101,8 @@ int main() {
           msgJson["throttle"] = throttle_value;
 
           // Display the MPC predicted trajectory 
-          vector<double> mpc_x_vals;
-          vector<double> mpc_y_vals;
+					vector<double> mpc_x_vals = { state[0] };
+					vector<double> mpc_y_vals = { state[1] };
 
 					// Add (x,y) points to the list.
 					// These points in the simulator are connected by a Green line
@@ -116,6 +116,7 @@ int main() {
           // Display the waypoints/reference line
           vector<double> next_x_vals;
           vector<double> next_y_vals;
+
 					// Add (x,y) points to list.
 					// These points in the simulator are connected by a Yellow line
 					double poly_inc = 2.5;
