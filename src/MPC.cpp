@@ -67,20 +67,17 @@ class FG_eval {
 			fg[0] += epsi_cost_weight * CppAD::pow(vars[epsi_start + t], 2);
 			fg[0] += v_cost_weight * CppAD::pow(vars[v_start + t] - ref_v, 2);
 		}
-
 		// Set the costs for steering (delta) and acceleration (a)
 		for (int t = 0; t < N - 1; t++) {
 			fg[0] += delta_cost_weight * CppAD::pow(vars[delta_start + t], 2);
 			fg[0] += a_cost_weight * CppAD::pow(vars[a_start + t], 2);
 		}
-
 		// Set the costs related to the change in steering and acceleration
 		// (makes the ride smoother)
 		for (int t = 0; t < N - 2; t++) {
 			fg[0] += delta_change_cost_weight * pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
 			fg[0] += a_change_cost_weight * pow(vars[a_start + t + 1] - vars[a_start + t], 2);
 		}
-
 		// Set the initial constraints
 		fg[1 + x_start] = vars[x_start];
 		fg[1 + y_start] = vars[y_start];
@@ -202,7 +199,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
   // options for IPOPT solver
   string options;
   // Uncomment this if you'd like more print information
-  options += "Integer print_level  0\n";
+  // options += "Integer print_level  0\n";
   // NOTE: Setting sparse to true allows the solver to take advantage
   //   of sparse routines, this makes the computation MUCH FASTER. If you can
   //   uncomment 1 of these and see if it makes a difference or not but if you
