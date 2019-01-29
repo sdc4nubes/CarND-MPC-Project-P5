@@ -49,13 +49,10 @@ class FG_eval {
   typedef CPPAD_TESTVECTOR(AD<double>) ADvector;
   void operator()(ADvector& fg, const ADvector& vars) {
 
-     // MPC
-
-     // `fg` is a vector of the cost constraints, `vars` is a vector of variable 
-     //   values (state & actuators)
+     // fg[0] is a vector of the cost constraints
 		fg[0] = 0;
 
-		// Relative weights of cost constraints (tuneable)
+		// Set the relative weights of cost constraints (tuneable)
 		const int cte_cost_weight = 2000;
 		const int epsi_cost_weight = 2000;
 		const int v_cost_weight = 1;
@@ -64,41 +61,8 @@ class FG_eval {
 		const int delta_change_cost_weight = 100;
 		const int a_change_cost_weight = 10;
 
-		// Cost for CTE, psi error and velocity
+		// Set the CTE, psi error and velocity constraints
 		for (int t = 0; t < N; t++) {
-			fg[0] += cte_cost_weight * CppAD::pow(vars[cte_start + t], 2);
-			fg[0] += epsi_cost_weight * CppAD::pow(vars[epsi_start + t], 2);
-			fg[0] += v_cost_weight * CppAD::pow(vars[v_start + t] - ref_v, 2);
-		}
-		// Costs for steering (delta) and acceleration (a)
-		for (int t = 0; t < N - 1; t++) {
-			fg[0] += delta_cost_weight * CppAD::pow(vars[delta_start + t], 2);
-			fg[0] += a_cost_weight * CppAD::pow(vars[a_start + t], 2);
-		}
-
-		// Costs that make the ride smoother
-		for (int t = 0; t < N - 2; t++) {
-			fg[0] += delta_change_cost_weight * pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
-			fg[0] += a_change_cost_weight * pow(vars[a_start + t + 1] - vars[a_start + t], 2);
-		}
-
-		// Model Constraints
-
-		// Set the initial constraints
-		// (Add 1 since fg[0] is the cost)
-		fg[1 + x_start] = vars[x_start];
-		fg[1 + y_start] = vars[y_start];
-		fg[1 + psi_start] = vars[psi_start];
-		fg[1 + v_start] = vars[v_start];
-		fg[1 + cte_start] = vars[cte_start];
-		fg[1 + epsi_start] = vars[epsi_start];
-
-		// Set the state constraints
-		for (int t = 1; t < N; t++) {
-			// State at time t + 1
-			AD<double> x1 = vars[x_start + t];
-			AD<double> y1 = vars[y_start + t];
-			AD<double> psi1 = vars[psi_start + t];
 			AD<double> v1 = vars[v_start + t];
 			AD<double> cte1 = vars[cte_start + t];
 			AD<double> epsi1 = vars[epsi_start + t];
@@ -157,29 +121,25 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
   for (int i = 0; i < n_vars; ++i) {
     vars[i] = 0;
   }
-
+	// Declare upper and lower limit vectors
   Dvector vars_lowerbound(n_vars);
   Dvector vars_upperbound(n_vars);
-
   // Set all non-actuator upper and lower limits
   // to the maximum negative and positive values.
 	for (int i = 0; i < delta_start; i++) {
 		vars_lowerbound[i] = -1.0e19;
 		vars_upperbound[i] = 1.0e19;
 	}
-
 	// Set upper and lower limits of delta to -25 and 25 degrees (values in radians).
 	for (int i = delta_start; i < a_start; i++) {
 		vars_lowerbound[i] = -0.436332 * Lf;
 		vars_upperbound[i] = 0.43632 * Lf;
 	}
-
 	// Set actuator limits.
 	for (int i = a_start; i < n_vars; i++) {
 		vars_lowerbound[i] = -1.0;
 		vars_upperbound[i] = 1.0;
 	}
-
   // Set lower and upper limits of the constraints to 0
   Dvector constraints_lowerbound(n_constraints);
   Dvector constraints_upperbound(n_constraints);
@@ -187,7 +147,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
     constraints_lowerbound[i] = 0;
     constraints_upperbound[i] = 0;
   }
-
+	// Set lowerbound of constraints
 	constraints_lowerbound[x_start] = x;
 	constraints_lowerbound[y_start] = y;
 	constraints_lowerbound[psi_start] = psi;
@@ -195,6 +155,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 	constraints_lowerbound[cte_start] = cte;
 	constraints_lowerbound[epsi_start] = epsi;
 
+	// Set upperbound of constraints
 	constraints_upperbound[x_start] = x;
 	constraints_upperbound[y_start] = y;
 	constraints_upperbound[psi_start] = psi;
@@ -233,7 +194,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 
   // Cost
   auto cost = solution.obj_value;
-  std::cout << "Cost " << cost << std::endl;
+  // std::cout << "Cost " << cost << std::endl;
 
   // Return the first actuator values. 
 	vector<double> result;

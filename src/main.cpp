@@ -61,7 +61,6 @@ int main() {
 						ptsx_car[i] = x * cos(-psi) - y * sin(-psi);
 						ptsy_car[i] = x * sin(-psi) + y * cos(-psi);
 					}
-
 					// Fit a 3rd-order polynomial to the above coordinates
 					auto coeffs = polyfit(ptsx_car, ptsy_car, 3);
 
@@ -89,17 +88,15 @@ int main() {
 					Eigen::VectorXd state(6);
 					state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
 
-					// Predict the MPC
+					// Set the MPC
 					auto vars = mpc.Solve(state, coeffs);
 
 					// Calculate steering and throttle
 					double steer_value = vars[0] / (deg2rad(25) * Lf);
 					double throttle_value = vars[1];
 
+					// Set steering and throttle
           json msgJson;
-          // NOTE: Remember to divide by deg2rad(25) before you send the 
-          //   steering value back. Otherwise the values will be in between 
-          //   [-deg2rad(25), deg2rad(25] instead of [-1, 1].
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = throttle_value;
 
@@ -109,44 +106,30 @@ int main() {
 
 					// Add (x,y) points to the list.
 					// These points in the simulator are connected by a Green line
-
 					for (int i = 2; i < vars.size(); i += 2) {
 						mpc_x_vals.push_back(vars[i]);
 						mpc_y_vals.push_back(vars[i + 1]);
 					}
-
           msgJson["mpc_x"] = mpc_x_vals;
           msgJson["mpc_y"] = mpc_y_vals;
 
           // Display the waypoints/reference line
           vector<double> next_x_vals;
           vector<double> next_y_vals;
-
 					// Add (x,y) points to list.
 					// These points in the simulator are connected by a Yellow line
-
 					double poly_inc = 2.5;
 					int num_points = 25;
-
 					for (int i = 1; i < num_points; i++) {
 						next_x_vals.push_back(poly_inc * i);
 						next_y_vals.push_back(polyeval(coeffs, poly_inc * i));
 					}
-
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
-
-
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-          std::cout << msg << std::endl;
+          //std::cout << msg << std::endl;
+
           // Latency
-          // The purpose is to mimic real driving conditions where
-          //   the car does not actuate the commands instantly.
-          //
-          // Feel free to play around with this value but should be to drive
-          //   around the track with 100ms latency.
-          //
-          // NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE SUBMITTING.
           std::this_thread::sleep_for(std::chrono::milliseconds(100));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }  // end "telemetry" if
