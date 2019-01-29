@@ -194,7 +194,6 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 
   // object that computes objective and constraints
   FG_eval fg_eval(coeffs);
-	std::cout << "I am here" << std::endl;
 
   // NOTE: You don't have to worry about these options
   // options for IPOPT solver
@@ -213,6 +212,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 
   // place to return solution
   CppAD::ipopt::solve_result<Dvector> solution;
+	std::cout << "I am here" << std::endl;
 
   // solve the problem
   CppAD::ipopt::solve<Dvector, FG_eval>(
