@@ -89,7 +89,7 @@ int main() {
 					state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
 
 					// Set the MPC
-					auto vars = mpc.Solve(state, coeffs);
+					//auto vars = mpc.Solve(state, coeffs);
 
 					// Calculate steering and throttle
 					double steer_value = vars[0] / (deg2rad(25) * Lf);

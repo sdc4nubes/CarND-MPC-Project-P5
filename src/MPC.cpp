@@ -194,7 +194,6 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 
   // object that computes objective and constraints
   FG_eval fg_eval(coeffs);
-	return;
 
   // NOTE: You don't have to worry about these options
   // options for IPOPT solver
