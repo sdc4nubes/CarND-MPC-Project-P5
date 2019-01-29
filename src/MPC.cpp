@@ -107,7 +107,7 @@ class FG_eval {
 			AD<double> cte0 = vars[cte_start + t - 1];
 			AD<double> epsi0 = vars[epsi_start + t - 1];
 
-			// Set the actuator constraints (at time t only)
+			// Set the actuator constraints at time t
 			AD<double> delta0 = vars[delta_start + t - 1];
 			AD<double> a0 = vars[a_start + t - 1];
 
@@ -167,7 +167,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 		vars_lowerbound[i] = -0.436332 * Lf;
 		vars_upperbound[i] = 0.43632 * Lf;
 	}
-	// Set actuator limits.
+	// Set actuator limits to -1 and 1
 	for (int i = a_start; i < n_vars; i++) {
 		vars_lowerbound[i] = -1.0;
 		vars_upperbound[i] = 1.0;
@@ -179,7 +179,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
     constraints_lowerbound[i] = 0;
     constraints_upperbound[i] = 0;
   }
-	// Set lowerbound of constraints
+	// Set lowerbound of constraints to current values
 	constraints_lowerbound[x_start] = x;
 	constraints_lowerbound[y_start] = y;
 	constraints_lowerbound[psi_start] = psi;
@@ -187,7 +187,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 	constraints_lowerbound[cte_start] = cte;
 	constraints_lowerbound[epsi_start] = epsi;
 
-	// Set upperbound of constraints
+	// Set upperbound of constraints to current values
 	constraints_upperbound[x_start] = x;
 	constraints_upperbound[y_start] = y;
 	constraints_upperbound[psi_start] = psi;
@@ -230,10 +230,8 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 
   // Return the first actuator values. 
 	vector<double> result;
-
 	result.push_back(solution.x[delta_start]);
 	result.push_back(solution.x[a_start]);
-
 	for (int i = 0; i < N - 2; i++) {
 		result.push_back(solution.x[x_start + i + 1]);
 		result.push_back(solution.x[y_start + i + 1]);
