@@ -89,13 +89,12 @@ int main() {
 					state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
 
 					// Set the MPC
-					//auto vars = mpc.Solve(state, coeffs);
+					auto vars = mpc.Solve(state, coeffs);
+					std::cout << "I am here" << std::endl;
 
 					// Calculate steering and throttle
-					//double steer_value = vars[0] / (deg2rad(25) * Lf);
-					//double throttle_value = vars[1];
-					double steer_value = 1.
-					double throttle_value =1.;
+					double steer_value = vars[0] / (deg2rad(25) * Lf);
+					double throttle_value = vars[1];
 
 					// Set steering and throttle
           json msgJson;
