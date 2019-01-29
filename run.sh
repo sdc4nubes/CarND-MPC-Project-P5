@@ -1,3 +1,3 @@
-# Run PID Controller
+# Run MPC Controller
 cd ./build
-./pid
+./mpc
