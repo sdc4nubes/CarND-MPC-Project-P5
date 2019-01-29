@@ -66,7 +66,7 @@ class FG_eval {
 			// State at time t + 1
 			AD<double> x1 = vars[x_start + t];
 			AD<double> y1 = vars[y_start + t];
-			AD<double> psi1 = vars[psi_start + t]
+			AD<double> psi1 = vars[psi_start + t];
 			AD<double> v1 = vars[v_start + t];
 			AD<double> cte1 = vars[cte_start + t];
 			AD<double> epsi1 = vars[epsi_start + t];
