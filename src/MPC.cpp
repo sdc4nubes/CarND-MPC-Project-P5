@@ -61,7 +61,35 @@ class FG_eval {
 		const int delta_change_cost_weight = 100;
 		const int a_change_cost_weight = 10;
 
-		// Set the CTE, psi error and velocity constraints
+		// Set the cost for CTE, psi error and velocity
+		for (int t = 0; t < N; t++) {
+			fg[0] += cte_cost_weight * CppAD::pow(vars[cte_start + t], 2);
+			fg[0] += epsi_cost_weight * CppAD::pow(vars[epsi_start + t], 2);
+			fg[0] += v_cost_weight * CppAD::pow(vars[v_start + t] - ref_v, 2);
+		}
+
+		// Set the costs for steering (delta) and acceleration (a)
+		for (int t = 0; t < N - 1; t++) {
+			fg[0] += delta_cost_weight * CppAD::pow(vars[delta_start + t], 2);
+			fg[0] += a_cost_weight * CppAD::pow(vars[a_start + t], 2);
+		}
+
+		// Set the costs related to the change in steering and acceleration
+		// (makes the ride smoother)
+		for (int t = 0; t < N - 2; t++) {
+			fg[0] += delta_change_cost_weight * pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+			fg[0] += a_change_cost_weight * pow(vars[a_start + t + 1] - vars[a_start + t], 2);
+		}
+
+		// Set the initial constraints
+		fg[1 + x_start] = vars[x_start];
+		fg[1 + y_start] = vars[y_start];
+		fg[1 + psi_start] = vars[psi_start];
+		fg[1 + v_start] = vars[v_start];
+		fg[1 + cte_start] = vars[cte_start];
+		fg[1 + epsi_start] = vars[epsi_start];
+		
+		// Set the rest of the constraints
 		for (int t = 0; t < N; t++) {
 			// State at time t + 1
 			AD<double> x1 = vars[x_start + t];
