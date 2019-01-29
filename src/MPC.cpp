@@ -193,6 +193,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 	constraints_upperbound[epsi_start] = epsi;
 
   // object that computes objective and constraints
+	std::cout << "I am here" << std::endl;
   FG_eval fg_eval(coeffs);
 
   // NOTE: You don't have to worry about these options
