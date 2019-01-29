@@ -33,20 +33,6 @@ PATH: /usr/sbin
 PATH: /usr/bin
 PATH: /sbin
 PATH: /bin
-PATH: /usr/games
-PATH: /usr/local/games
-PATH: /mnt/c/Program Files/WindowsApps/CanonicalGroupLimited.UbuntuonWindows_1804.2018.817.0_x64__79rhkp1fndgsc
-PATH: /mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v9.0/bin
-PATH: /mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v9.0/libnvvp
-PATH: /mnt/c/Windows/System32
-PATH: /mnt/c/Windows
-PATH: /mnt/c/Windows/System32/wbem
-PATH: /mnt/c/Windows/System32/WindowsPowerShell/v1.0
-PATH: /mnt/c/Windows/System32/OpenSSH
-PATH: /mnt/c/Program Files/Git/cmd
-PATH: /mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common
-PATH: /mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR
-PATH: /mnt/c/Users/Ron1/Anaconda3/envs/carnd-term1/Scripts
 PATH: /snap/bin
 
 
