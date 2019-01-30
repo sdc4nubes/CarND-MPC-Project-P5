@@ -11,6 +11,11 @@ using Eigen::VectorXd;
 using std::vector;
 using std::string;
 
+// For converting back and forth between radians and degrees.
+constexpr double pi() { return M_PI; }
+double deg2rad(double x) { return x * pi() / 180; }
+double rad2deg(double x) { return x * 180 / pi(); }
+
 //Timestep length and duration
 size_t N = 10;
 double dt = .2;
@@ -161,8 +166,8 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 	}
 	// Set upper and lower limits of delta to -25 and 25 degrees (values in radians).
 	for (int i = delta_start; i < a_start; i++) {
-		vars_lowerbound[i] = -0.436332;
-		vars_upperbound[i] = 0.436332;
+		vars_lowerbound[i] = -deg2rad(25);
+		vars_upperbound[i] = deg2rad(25);
 	}
 	// Set actuator limits to -1 and 1
 	for (int i = a_start; i < n_vars; i++) {
