@@ -73,7 +73,7 @@ Cost weighting, which determines the relative importance of each equation within
 - cte cost weight = 2000
 - epsi cost weight = 2000
 - v cost weight = 1
-- delta cost weight = 10;
+- delta cost weight = 10
 - a cost weight = 10
 - delta change cost weight*  = 500
 - a change cost weight* = 10

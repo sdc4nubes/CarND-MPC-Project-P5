@@ -28,7 +28,7 @@ double dt = .1;
 const double Lf = 2.67;
 
 // Set max speed
-const double ref_v = 120;
+const double ref_v = 150;
 
 // Set state and actuator variables
 const size_t x_start = 0;
@@ -55,7 +55,7 @@ class FG_eval {
 		// Set the relative weights of cost constraints (tuneable)
 		const int cte_cost_weight = 2000;
 		const int epsi_cost_weight = 2000;
-		const int v_cost_weight = 10;
+		const int v_cost_weight = 1;
 		const int delta_cost_weight = 10;
 		const int a_cost_weight = 10;
 		const int delta_change_cost_weight = 500;
