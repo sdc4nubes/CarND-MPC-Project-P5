@@ -16,11 +16,6 @@ using nlohmann::json;
 using std::string;
 using std::vector;
 
-// For converting back and forth between radians and degrees.
-constexpr double pi() { return M_PI; }
-double deg2rad(double x) { return x * pi() / 180; }
-double rad2deg(double x) { return x * 180 / pi(); }
-
 int main() {
   uWS::Hub h;
 
@@ -131,7 +126,7 @@ int main() {
           //std::cout << msg << std::endl;
 
           // Latency
-          std::this_thread::sleep_for(std::chrono::milliseconds(200));
+          std::this_thread::sleep_for(std::chrono::milliseconds(100));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }  // end "telemetry" if
       } else {
