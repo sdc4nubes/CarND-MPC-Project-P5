@@ -120,7 +120,7 @@ int main() {
 					// Add (x,y) points to list.
 					// These points in the simulator are connected by a Yellow line
 					double poly_inc = 2.5;
-					int num_points = 38;
+					int num_points = 25;
 					for (int i = 1; i < num_points; i++) {
 						next_x_vals.push_back(poly_inc * i);
 						next_y_vals.push_back(polyeval(coeffs, poly_inc * i));

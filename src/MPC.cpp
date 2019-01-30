@@ -12,7 +12,7 @@ using std::vector;
 using std::string;
 
 //Timestep length and duration
-size_t N = 15;
+size_t N = 10;
 double dt = .1;
 
 // This value assumes the model presented in the classroom is used.
