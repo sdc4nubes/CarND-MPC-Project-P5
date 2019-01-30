@@ -10,7 +10,7 @@ My c++ skills continue to improve, but this project was particularly difficult. 
 
 
 
-![](media/PID_Controller.gif)
+![](media/MPC_Controller.gif)
 
 Compiling
 ---------
