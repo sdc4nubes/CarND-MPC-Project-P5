@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include "Eigen-3.3/Eigen/Core"
-#include "helpers.h"
 
 using CppAD::AD;
 using Eigen::VectorXd;
