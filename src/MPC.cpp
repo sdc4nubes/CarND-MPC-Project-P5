@@ -58,7 +58,7 @@ class FG_eval {
 		const int v_cost_weight = 1;
 		const int delta_cost_weight = 10;
 		const int a_cost_weight = 10;
-		const int delta_change_cost_weight = 100;
+		const int delta_change_cost_weight = 500;
 		const int a_change_cost_weight = 10;
 
 		// Set the cost for CTE, psi error and velocity
