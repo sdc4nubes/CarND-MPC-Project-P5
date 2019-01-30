@@ -12,6 +12,8 @@ using Eigen::VectorXd;
 using std::vector;
 using std::string;
 
+double deg2rad(double x) { return x * pi() / 180; }
+
 //Timestep length and duration
 size_t N = 10;
 double dt = .2;
@@ -161,7 +163,6 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
 		vars_upperbound[i] = 1.0e19;
 	}
 	// Set upper and lower limits of delta to -25 and 25 degrees (values in radians).
-	double deg2rad(double x) { return x * pi() / 180; }
 	for (int i = delta_start; i < a_start; i++) {
 		vars_lowerbound[i] = -deg2rad(25) * Lf;
 		vars_upperbound[i] = deg2rad(25) * Lf;
