@@ -28,7 +28,7 @@ double dt = .1;
 const double Lf = 2.67;
 
 // Set max speed
-const double ref_v = 130;
+const double ref_v = 150;
 
 // Set state and actuator variables
 const size_t x_start = 0;
