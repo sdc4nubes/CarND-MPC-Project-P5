@@ -13,7 +13,7 @@ using std::string;
 
 //Timestep length and duration
 size_t N = 20;
-double dt = .1;
+double dt = .05;
 
 // This value assumes the model presented in the classroom is used.
 //
