@@ -1,116 +1,133 @@
-# CarND-Controls-MPC
-Self-Driving Car Engineer Nanodegree Program
+Project 5, Term 2: MPC Controller
+=======================
 
----
+Final Result
+------------
 
-## Dependencies
+The Model Predictive Control project involved writing a C++ program that drives a simulated car around a virtual track using waypoints. The simulated car's actuators have a 100ms latency (delay) that must be considered by the MPC.
 
-* cmake >= 3.5
- * All OSes: [click here for installation instructions](https://cmake.org/install/)
-* make >= 4.1(mac, linux), 3.81(Windows)
-  * Linux: make is installed by default on most Linux distros
-  * Mac: [install Xcode command line tools to get make](https://developer.apple.com/xcode/features/)
-  * Windows: [Click here for installation instructions](http://gnuwin32.sourceforge.net/packages/make.htm)
-* gcc/g++ >= 5.4
-  * Linux: gcc / g++ is installed by default on most Linux distros
-  * Mac: same deal as make - [install Xcode command line tools]((https://developer.apple.com/xcode/features/)
-  * Windows: recommend using [MinGW](http://www.mingw.org/)
-* [uWebSockets](https://github.com/uWebSockets/uWebSockets)
-  * Run either `install-mac.sh` or `install-ubuntu.sh`.
-  * If you install from source, checkout to commit `e94b6e1`, i.e.
-    ```
-    git clone https://github.com/uWebSockets/uWebSockets
-    cd uWebSockets
-    git checkout e94b6e1
-    ```
-    Some function signatures have changed in v0.14.x. See [this PR](https://github.com/udacity/CarND-MPC-Project/pull/3) for more details.
-
-* **Ipopt and CppAD:** Please refer to [this document](https://github.com/udacity/CarND-MPC-Project/blob/master/install_Ipopt_CppAD.md) for installation instructions.
-* [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page). This is already part of the repo so you shouldn't have to worry about it.
-* Simulator. You can download these from the [releases tab](https://github.com/udacity/self-driving-car-sim/releases).
-* Not a dependency but read the [DATA.md](./DATA.md) for a description of the data sent back from the simulator.
+My c++ skills continue to improve, but this project was particularly difficult. Since I'm still far from an expert, I used Michael Virgo's project as a reference for tying lessons 18 and 19 together.
 
 
-## Basic Build Instructions
 
-1. Clone this repo.
-2. Make a build directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make`
-4. Run it: `./mpc`.
+![](media/PID_Controller.gif)
 
-## Build with Docker-Compose
-The docker-compose can run the project into a container
-and exposes the port required by the simulator to run.
+Compiling
+---------
 
-1. Clone this repo.
-2. Build image: `docker-compose build`
-3. Run Container: `docker-compose up`
-4. On code changes repeat steps 2 and 3.
+#### Code must compile without errors using cmake and make.
 
-## Tips
+The code compiles without errors; however it generates numerous warnings. To correct this issue, CMakeLists.txt was modified as follows:
 
-1. The MPC is recommended to be tested on examples to see if implementation behaves as desired. One possible example
-is the vehicle offset of a straight line (reference). If the MPC implementation is correct, it tracks the reference line after some timesteps(not too many).
-2. The `lake_track_waypoints.csv` file has waypoints of the lake track. This could fit polynomials and points and see of how well your model tracks curve. NOTE: This file might be not completely in sync with the simulator so your solution should NOT depend on it.
-3. For visualization this C++ [matplotlib wrapper](https://github.com/lava/matplotlib-cpp) could be helpful.)
-4.  Tips for setting up your environment are available [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
-5. **VM Latency:** Some students have reported differences in behavior using VM's ostensibly a result of latency.  Please let us know if issues arise as a result of a VM environment.
+| From:                                | To:                                     |
+|--------------------------------------|-----------------------------------------|
+| set(CMAKE_CXX_FLAGS "\${CXX_FLAGS}") | set(CMAKE_CXX_FLAGS "\${CXX_FLAGS} -w") |
 
-## Editor Settings
+After the above modification, the [cmake] and [make] output looks good:
 
-We have kept editor configuration files out of this repo to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+![](media/Compile.png)
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+Implementation
+--------
 
-## Code Style
+#### The Model
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+**Describe the model in detail, including state, actuators and update equations.**
 
-## Project Instructions and Rubric
+-------------------
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+The MPC model receives the following information from the simulator:
+- ptsx (x-position of track waypoints in global coordinates)
+- ptsy (y-position of track waypoints in global coordinates)
+- px (current x-position of the vehicle in global coordinates)
+- py (current y-position of the vehicle in global coordinates)
+- psi (current orientation angle of the vehicle)
+- v<sub>t</sub> (current velocity of the vehicle)
+- delta<sub>t</sub> (current steering angle of the wheels)
+- a<sub>t</sub> (current throttle setting)
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/b1ff3be0-c904-438e-aad3-2b5379f0e0c3/concepts/1a2255a0-e23c-44cf-8d41-39b8a3c8264a)
-for instructions and the project rubric.
+From this, the following current state calculations are made:
+- x (distance from current x-position to each waypoint's x position) = ptsx - px
+- y (distance from current y-position to each waypoint's y position) = ptsy - py
+- ptsx_vehicle (ptsx waypoints in vehicle's coordinates) = x * cos(-psi) - y * sin(-psi)
+- ptsy_vehicle (ptsy waypoints in vehicle's coordinates) = x * sin(-psi) + y * cos(-psi)
+- coeffs (3rd degree polynomial of the vehicles waypoint coordinates) = polyfit(ptsx_vehicle, ptsy_vehicle, 3)
+- cte<sub>t</sub> (current cross track error) = polyeval(coeffs, 0)
+- epsi<sub>t</sub> (current psi error) = -atan(coeffs[1])
+- dt (elased duration) = 0.1
+- Lf (distance between the vehicle's center of gravity and it's front axle) = 2.67
 
-## Hints!
+Next, the state predictions are made using the following update equations:
+- px<sub>t+1</sub> = x<sub>t</sub>  + v<sub>t</sub> * cos(psi<sub>t</sub>) * dt = v<sub>t</sub> * dt;
+- py<sub>t+1</sub> = y<sub>t</sub> + v<sub>t</sub> * sin(psi<sub>t</sub>) * dt = 0.0
+- psi<sub>t+1</sub> = psi<sub>t</sub> + v<sub>t</sub> / Lf * -delta<sub>t</sub> * dt = v<sub>t</sub> * -delta<sub>t</sub> / Lf * dt
+- v<sub>t+1</sub> = v<sub>t</sub> + a<sub>t</sub> * dt
+- cte<sub>t+1</sub> = cte<sub>t</sub> + v<sub>t</sub> * sin(epsi<sub>t</sub>) * dt
+- epsi<sub>t+1</sub> = epsi<sub>t</sub> + v<sub>t</sub> * -delta<sub>t</sub> / Lf * dt;
 
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
+The MPC Model is then loaded and run.  The purpose of the model is to determine the values for each actuator that minimize the total weighted error:
+- state (predicted state vector) is set to px<sub>t+1</sub>, py<sub>t+1</sub>, psi<sub>t+1</sub>, v<sub>t+1</sub>, cte<sub>t+1</sub>, epsi<sub>t+1</sub>
+- mpc.Solve(state, coeffs) runs the model
 
-## Call for IDE Profiles Pull Requests
+Cost weighting, which determines the relative importance of each equation within the model, is performed within MPC.cpp.  These values are set by trial and error:
+- cte cost weight = 2000
+- epsi cost weight = 2000
+- v cost weight = 1
+- delta cost weight = 10;
+- a cost weight = 10
+- delta change cost weight*  = 500
+- a change cost weight* = 10
 
-Help your fellow students!
+The model also sets limits on the actuators:
+- steering limits are set to +/- 25 degrees
+- throttle limits are set to +/- 1
 
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. We omitted IDE profiles to ensure
-students don't feel pressured to use one IDE or another.
+Actuators (vars) are returned from the model
 
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
+The actuators are set:
+- steer_value (steering actuator) = vars[0]
+- throttle_value (throttle actuator) = vars[1]
 
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
+*change cost weights are used to make the ride smoother
 
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
+---------------
+#### Timestep Length and Elapsed Duration (N & dt)
 
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. Most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
+**Discuss the reasoning behind the chosen N (timestep length) and dt (elapsed duration between timesteps) values. Additionally, describe the previous values tried.**
 
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
+The values for N and dt, 10 and 0.1 respectively, were chosen by selecting the predominant N and dt values from other MPC projects. 
 
-## How to write a README
-A well written README file can enhance your project and portfolio and develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+Intuitively, an elapsed duration equal to the actuators' 100ms latency also made sense, as did a timestep of 10, since that produced a one second look-ahead.
+
+To confirm the validity of these settings, timesteps of N = 5, 10, 15 and 20 were tried, as were elapsed durations of dt = .05, .1, .15 and .2.  The best combination tested was N = 10 and dt = .1.
+
+---------------
+#### Polynomial Fitting and MPC Preprocessing
+
+The coeffs variable (described above) is the output of the third degree polynomial fitting function.
+
+The x, y, ptsx and ptsy variables (also described above) represent the processing performed prior to polynomial fitting.
+
+---------------
+#### Model Predictive Control with Latency
+
+**Provide details on how the Predictive Control model handles a 100 millisecond latency.**
+
+The state predictions above (px<sub>t+1</sub>, py<sub>t+1</sub>, psi<sub>t+1</sub>, v<sub>t+1</sub>, cte<sub>t+1</sub>, and epsi<sub>t+1</sub>) all factor in a latency (dt) of .1.  Although this variable (dt) has the same name as the elapsed duration variable, the latency (dt) is defined in main.cpp, whereas the elapsed duration (dt) is defined in MPC.cpp.
+
+This was done to keep the formulas consistent with those in lessons 18 and 19.
+
+-------------------
+
+Simulation
+-------------------
+
+**The vehicle must successfully drive a lap around the track.**
+
+A recording of the vehicle is shown at the top of this page.
+
+No tire leaves the drivable portion of the track surface. The vehicle does not pop up onto ledges and does not roll over any surfaces that would otherwise be considered unsafe (if humans were in the vehicle).  The vehicle does not go over the curb, but occasionally drives on the lines before the curb.
+
+The vehicle achieves speeds in excess of 100 mph.
+
+

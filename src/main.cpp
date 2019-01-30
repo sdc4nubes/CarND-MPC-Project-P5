@@ -51,18 +51,18 @@ int main() {
 					double a = j[1]["throttle"];
 
 					// Declare Eigen vectors for polyfit
-					Eigen::VectorXd ptsx_car(ptsx.size());
-					Eigen::VectorXd ptsy_car(ptsy.size());
+					Eigen::VectorXd ptsx_vehicle(ptsx.size());
+					Eigen::VectorXd ptsy_vehicle(ptsy.size());
 
 					// Calculate vehicle's coordinates
 					for (int i = 0; i < ptsx.size(); i++) {
 						double x = ptsx[i] - px;
 						double y = ptsy[i] - py;
-						ptsx_car[i] = x * cos(-psi) - y * sin(-psi);
-						ptsy_car[i] = x * sin(-psi) + y * cos(-psi);
+						ptsx_vehicle[i] = x * cos(-psi) - y * sin(-psi);
+						ptsy_vehicle[i] = x * sin(-psi) + y * cos(-psi);
 					}
 					// Fit a 3rd-order polynomial to the above coordinates
-					auto coeffs = polyfit(ptsx_car, ptsy_car, 3);
+					auto coeffs = polyfit(ptsx_vehicle, ptsy_vehicle, 3);
 
 					// Calculate the cross track error
 					double cte = polyeval(coeffs, 0);
@@ -76,10 +76,10 @@ int main() {
 					// Set latency
 					const double dt = 0.1;
 
-					// Predict the state after latency
-					double pred_px = 0.0 + v * dt;
+					// Predict the state after elapsed duration
+					double pred_px = v * dt;
 					const double pred_py = 0.0;
-					double pred_psi = 0.0 + v * -delta / Lf * dt;
+					double pred_psi = v * -delta / Lf * dt;
 					double pred_v = v + a * dt;
 					double pred_cte = cte + v * sin(epsi) * dt;
 					double pred_epsi = epsi + v * -delta / Lf * dt;
