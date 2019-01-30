@@ -4,9 +4,9 @@ Project 5, Term 2: MPC Controller
 Final Result
 ------------
 
-The Model Predictive Control project involved writing a C++ program that drives a simulated car around a virtual track using waypoints. The simulated car's actuators have a 100ms latency (delay) that must be considered by the MPC.
+The Model Predictive Control (MPC) project involved writing a C++ program that drives a simulated car around a virtual track using waypoints. The simulated car's actuators have a 100ms latency (delay) that must be considered by the MPC.
 
-My c++ skills continue to improve, but this project was particularly difficult. Since I'm still far from an expert, I used Michael Virgo's project as a reference for tying lessons 18 and 19 together.
+My c++ skills continue to improve, but this project was particularly difficult. I used Michael Virgo's project as guidance for tying lessons 18 and 19 together.
 
 
 
@@ -104,18 +104,18 @@ To confirm the validity of these settings, timesteps of N = 5, 10, 15 and 20 wer
 ---------------
 #### Polynomial Fitting and MPC Preprocessing
 
-The coeffs variable (described above) is the output of the third degree polynomial fitting function.
+**Fit a polynomial to waypoints and describe any preprocessing performed prior to calling the polynomial fitting procedure.**
 
-The x, y, ptsx and ptsy variables (also described above) represent the processing performed prior to polynomial fitting.
+The coeffs variable, described in **The Model** section above, is the output of the third degree polynomial fitting function.
+
+The x, y, ptsx and ptsy variables, also described above, represent the processing performed prior to polynomial fitting.
 
 ---------------
 #### Model Predictive Control with Latency
 
 **Provide details on how the Predictive Control model handles a 100 millisecond latency.**
 
-The state predictions above (px<sub>t+1</sub>, py<sub>t+1</sub>, psi<sub>t+1</sub>, v<sub>t+1</sub>, cte<sub>t+1</sub>, and epsi<sub>t+1</sub>) all factor in a latency (dt) of .1.  Although this variable (dt) has the same name as the elapsed duration variable, the latency (dt) is defined in main.cpp, whereas the elapsed duration (dt) is defined in MPC.cpp.
-
-This was done to keep the formulas consistent with those in lessons 18 and 19.
+The state predictions (px<sub>t+1</sub>, py<sub>t+1</sub>, psi<sub>t+1</sub>, v<sub>t+1</sub>, cte<sub>t+1</sub>, and epsi<sub>t+1</sub>) described in **The Model** section above contain a latency (dt) of .1.  Although this variable (dt) has the same name as the Elapsed Duration variable, latency (dt) is defined in main.cpp, whereas elapsed duration (dt) is defined in MPC.cpp.  Dual usage of the same variable name, while normally frowned upon, keeps the formulas consistent with those provided in lessons 18 and 19.
 
 -------------------
 
