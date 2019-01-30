@@ -12,6 +12,7 @@ using Eigen::VectorXd;
 using std::vector;
 using std::string;
 
+constexpr double pi() { return M_PI; }
 double deg2rad(double x) { return x * pi() / 180; }
 
 //Timestep length and duration

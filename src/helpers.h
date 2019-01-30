@@ -54,7 +54,7 @@ VectorXd polyfit(const VectorXd &xvals, const VectorXd &yvals, int order) {
     }
   }
 
-  auto Q = A.HouseholderQR();
+  auto Q = A.householderQr();
   auto result = Q.solve(yvals);
 
   return result;
