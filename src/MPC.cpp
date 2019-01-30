@@ -199,7 +199,7 @@ vector<double> MPC::Solve(const VectorXd &state, const VectorXd &coeffs) {
   // options for IPOPT solver
   string options;
   // Uncomment this if you'd like more print information
-  // options += "Integer print_level  0\n";
+  options += "Integer print_level  0\n";
   // NOTE: Setting sparse to true allows the solver to take advantage
   //   of sparse routines, this makes the computation MUCH FASTER. If you can
   //   uncomment 1 of these and see if it makes a difference or not but if you
