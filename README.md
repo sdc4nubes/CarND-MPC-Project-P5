@@ -4,26 +4,14 @@ Project 5, Term 2: MPC Controller
 Final Result
 ------------
 
-The Model Predictive Control (MPC) project involved writing a C++ program that drives a simulated car around a virtual track using waypoints. The simulated car's actuators have a 100ms latency (delay) that must be considered by the MPC.
-
-My c++ skills continue to improve, but this project was particularly difficult. I used Michael Virgo's project as guidance for tying lessons 18 and 19 together.
-
-
-
 ![](media/MPC_Controller.gif)
 
-Compiling
+Compilation
 ---------
 
-#### Code must compile without errors using cmake and make.
+#### Your code should compile.
 
-The code compiles without errors; however it generates numerous warnings. To correct this issue, CMakeLists.txt was modified as follows:
-
-| From:                                | To:                                     |
-|--------------------------------------|-----------------------------------------|
-| set(CMAKE_CXX_FLAGS "\${CXX_FLAGS}") | set(CMAKE_CXX_FLAGS "\${CXX_FLAGS} -w") |
-
-After the above modification, the [cmake] and [make] output looks good:
+The code compiles without errors:
 
 ![](media/Compile.png)
 
